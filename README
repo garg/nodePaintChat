@@ -1,0 +1,9 @@
+a simple chat-paint-room demo based on nodejs ，which means you can paint and chat with your chaters on realtime
+
+一个基于nodejs开发的简单聊天室，不同的是你还可以即时地与聊天室的其他人协作绘图
+
+to run the Demo
+
+运行该演示程序
+
+$ /usr/local/bin/node server.js
