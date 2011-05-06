@@ -1,6 +1,7 @@
 /**
- * Module dependencies.
+ * a simple chat-paint-room demo based on nodejs ，which means you can paint and chat with your chaters on realtime
  * @author hpf1908@gmail.com
+ * @date 2011.05.07
  */
 
 var express = require('express');

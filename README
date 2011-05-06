@@ -2,8 +2,45 @@ a simple chat-paint-room demo based on nodejs ，which means you can paint and c
 
 一个基于nodejs开发的简单聊天室，不同的是你还可以即时地与聊天室的其他人协作绘图
 
-to run the Demo
+before run the Demo ，you should check out node enviroments is ready ,and then you should install third module named 'express 2.3.2' and 'ejs' 
+express:a wonderful node mvc framework ,for details you can also see  http://expressjs.com/
+ejs:a js template engine , for details you can also see http://embeddedjs.com/
 
-运行该演示程序
+在运行演示程序前，首先确定你的node环境已经准备好了，然后你还需要安装第三方模块express 2.3.2和ejs
+
+express:一个非常不错的node mvc框架,获取更多信息你可以访问 http://expressjs.com/
+ejs:一个js模板引擎 , 获取更多信息你可以访问 http://embeddedjs.com/
+
+advice:that will be really easy for you to prepare enviroment by npm , so if you don't have install npm ,just install it 
+
+建议：使用npm（node 包管理器）将会使你准备环境变得非常容易，如果你还没有安装npm，建议你马上安装吧
+
+how to install npm ?
+
+如何安装npm?
+
+One Line Install
+
+一键安装命令（得益于curl安装太容易了，不过前提是你得联网，如果github上不了，那我只能表示遗憾！！
+curl http://npmjs.org/install.sh | sh
+
+if you want to known more about npm , you should see http://npmjs.org/
+
+如果你想了解更多有关npm的东西，请访问 http://npmjs.org/
+
+if you have installed npm ,just use following command to install 'express' and 'ejs'
+
+如果你已经安装了npm，只需要如下命令即可安装'express'和 'ejs'
+npm express
+npm ejs
+
+
+OK，if you have done with your enviroments ,just run following command and then have fun 
+
+好了，如果你已经准备好了环境，那么执行以下命令
 
 $ /usr/local/bin/node server.js
+
+if there is any question about this app ,that will be appriciate for you to contact me , just mail hpf1908@gmail.com
+
+如果对这个app有什么问题的话，欢迎与我联系  hpf1908@gmail.com ，新浪微博 hpf1908

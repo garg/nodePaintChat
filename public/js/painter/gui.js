@@ -329,40 +329,34 @@
 	        this.moveTo(window.event || event, this.RangeBlock[0]);
 	    },
 	    moveTo: function (e, elem) {
-	        //获取滑动块相对于 body 的坐标
+	 
 	        var pos = getClientRect(elem);
 	        var x = e.clientX - this._offsetX - pos.left - 10;
 	
-	        //固定滑动块位置在滑动条内
 	        if (x < 0) x = 0;
 	        else if (x > this.options.width - this.options.blockWidth) x = this.options.width - this.options.blockWidth;
 	
 	        this.RangeBlock.css({ left: x + "px" });
 	
-	        //计算数值
 	        var val = Math.round(x / this.Interval) + this.options.minVal;
 	        if (val != this.preVal) {
 	            this.preVal = this.curVal;
 	            this.curVal = val;
 	
 	            if (this.ValShowElem) this.ValShowElem.text(val);
-	            //触发onchange函数
 	            this.options.onchange.apply(this);
 	        }
 	    },
 	    mouseup: function (event) {
-	        //给 document 解除绑定 mousemove、mouseup 事件
+
 	        $(document).unbind("mousemove", this._move).unbind("mouseup", this._mouseup);
 	        Sys.ie && this.RangeBlock[0].releaseCapture();
-	        //触发onmouseup函数
 	        this.options.onmouseup.apply(this);
 	    },
 	    setInterval: function (minVal, maxVal) {
-	        //设置间隔值
 	        this.Interval = (this.options.width - this.options.blockWidth) / (maxVal - minVal);
 	    },
 	    setCurrentVal: function (val) {
-	        //设置滑动块初始位置
 	        this.RangeBlock.css("left", (val - this.options.minVal) * this.Interval + "px");
 	    }
 	});
@@ -492,7 +486,6 @@
 	                var opt = options[index],
 	                arg = gui_options[t.options.type];
 	
-	                // 滑动条
 	                var range = new Range({
 	                    maxVal: arg[opt],
 	                    initVal: t.options[opt],
