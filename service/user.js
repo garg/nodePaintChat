@@ -4,7 +4,8 @@ var sys = require("sys"),
 
 var MESSAGE_BACKLOG = 200,
 	SESSION_TIMEOUT = 60 * 1000,
-	MESSAGE_NUM = 0;
+	MESSAGE_NUM = 0,
+	HISTORY_NUM = 20;
 
 var channel = new function () {
 	var messages = [],
@@ -24,20 +25,21 @@ var channel = new function () {
 		switch (type) {
 		  case "msg":
 			m.text = arguments[2];
-		    sys.puts("<" + nick + "> " + m.text);
+		   // sys.puts("<" + nick + "> " + m.text);
 		    break;
 		  case "join":
 			m.text = arguments[2];
-		    sys.puts(nick + " join");
+		   // sys.puts(nick + " join");
 		    break;
 		  case "part":
 			m.text = arguments[2];
-		    sys.puts(nick + " part");
+		    //sys.puts(nick + " part");
 		    break;
 		  case "oper":
 			m.pos = arguments[2];
 			m.options=arguments[3];
-			sys.puts(nick + " oper");
+			m.subtype=arguments[4];
+			//sys.puts(nick + " oper");
 			break;
 		}	
 
@@ -155,10 +157,13 @@ module.exports = {
   sendMsg:function(nick ,msg){
 	channel.appendMessage(nick, 'msg', msg);
   },
-  sendOper:function(nick ,pos, options){
-	channel.appendMessage(nick, 'oper',pos,options); 
+  sendOper:function(nick ,pos, options ,subtype){
+	channel.appendMessage(nick, 'oper',pos, options ,subtype); 
   },
   join:function(nick){
 	channel.appendMessage(nick, 'join');  
+  },
+  getMsgNum:function(){
+	 return MESSAGE_NUM - HISTORY_NUM >=0?MESSAGE_NUM - HISTORY_NUM:0;
   }
 }

@@ -65,8 +65,8 @@ $(function(){
             <img src="images/shape_ellipses.png" onclick="Painter.tool.rotundity.load();Painter.canvas.temp[0].style.cursor=\'crosshair\';" style="width:40px;height:40px;"/>\
             <img src="images/shape_polygon.png" onclick="Painter.tool.rectangle.load();Painter.canvas.temp[0].style.cursor=\'crosshair\';" style="width:40px;height:40px;"/></div>\
             <div id="'+Config.color+'" style="margin-top:10px;margin-left:5px;width: 34px; height: 23px; border: 1px solid #fff; float: left;"></div>\
-            <div onclick="Painter.Gui.clearPaint();" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">重画</div>\
-            <div onclick="location.href=canvas.main[0].toDataURL();" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">保存</div>']
+            <div onclick="Painter.clearPaint();" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">重画</div>\
+            <div onclick="location.href=Painter.canvas.main[0].toDataURL();" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">保存</div>']
     });
     tools.M.css({ left: Math.max(0, paint.M[0].offsetLeft - tools.M[0].offsetWidth - 10) + "px", top: paint.M[0].offsetTop + "px" });
 
@@ -312,6 +312,11 @@ $(function(){
     namespace.paint=paint;
     namespace.updateImageHandler=function(){};
     namespace.updateMouseMoveHandler=function(){};
+    namespace.clearPaint=function(){
+       namespace.Gui.clearPaint();
+       jQuery.post("/users/sendOper", {id: Painter.CONFIG.id, subtype:'clear' ,pos: '', options:''}, function (data) { }, "json");    	
+    }
+
 });
     
 })(Painter,'Painter');

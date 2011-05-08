@@ -4,7 +4,8 @@ $(function(){
 	    extend=Painter.Util.extend,
 	    util=Painter.Util,
 		Module=Painter.Gui.Module,
-		paint=Painter.paint;
+		paint=Painter.paint,
+		timeProcessArray=Painter.Util.timeProcessArray;
 	
 	//dependency
 	var createFlow=Painter.Gui.createFlow;
@@ -67,13 +68,13 @@ $(function(){
 			 var posOne=arr[0].split('_');
 			 drawFlow(posOne,options,true);   		  
 		  } else {
-			  for(var i=0,len=arr.length;i<len;i++){
-				  var posOne=arr[i].split('_');
-				  drawFlow(posOne,options);  
-			  }		  
-		  }
-
-		  
+			  var drawWork=function(item){
+				 var posOne=item.split('_');  
+				 drawFlow(posOne,options);
+			  }
+			  //分时操作
+			  timeProcessArray(arr ,drawWork,function(){});
+		  }		  
 	  }	
   }
   
@@ -155,6 +156,27 @@ $(function(){
  // and call again with response. the last part is like recursion except the call
  // is being made from the response handler, and not at some point during the
  // function's execution.
+ var subscribse=function(){
+	//make another request
+	 $.ajax({ 
+	   cache: false, 
+	   type: "GET", 
+	   url: "/users/subscribse", 
+	   dataType: "json", 
+	   data: { since: CONFIG.last_message_time, id: CONFIG.id, msgid:CONFIG.msgid }, 
+	   error: function () {
+		   log("", "long poll error. trying again...", new Date(), "error");
+           //don't flood the servers on error, wait 10 seconds before retrying
+           setTimeout(longPoll, 10*1000);
+       }, 
+       success: function (json) {
+    	   transmission_errors = 0;
+    	   if(json.status==1)
+    		   longPoll(json.data);
+       }
+	 }); 
+ }
+ 
  function longPoll (data) {
    if (transmission_errors > 2) {
      log('transmission_errors > 2');
@@ -173,58 +195,51 @@ $(function(){
    //process any updates we may have
    //data will be null on the first call of longPoll
    if (data && data.messages) {
-     for (var i = 0; i < data.messages.length; i++) {
-       var message = data.messages[i];
+	   
+	 var userChanged =false;
+     
+     var handlerMessage=function(message){
+         //track oldest message so we only request newer messages from server
+         if (message.msgid > CONFIG.msgid)
+           CONFIG.msgid = message.msgid;
 
-       //track oldest message so we only request newer messages from server
-       if (message.msgid > CONFIG.msgid)
-         CONFIG.msgid = message.msgid;
-
-       //dispatch new messages to their appropriate handlers
-       switch (message.type) {
-         case "msg":
-           client.appendMsg(message.nick+'：',message.text);
-           break;
-         case "join":
-        	client.appendInfo(message.nick+'加入了聊天室');
-           break;
-         case "part":
-        	client.appendInfo(message.nick+'退出了聊天室');
-           break;
-         case "oper":
-           drawOper(message.pos,message.options,message.nick);
-           break;
-       }
+         //dispatch new messages to their appropriate handlers
+         switch (message.type) {
+           case "msg":
+             client.appendMsg(message.nick+'：',message.text);
+             break;
+           case "join":
+          	client.appendInfo(message.nick+'加入了聊天室');
+          	userChanged=true;
+             break;
+           case "part":
+          	client.appendInfo(message.nick+'退出了聊天室');
+          	userChanged=true;
+             break;
+           case "oper":
+             //判断是否清空画板，临时方案
+             if(message.subtype!='clear'){
+          	   drawOper(message.pos,message.options,message.nick);        	   
+             }
+             else {   
+          	   client.appendInfo(message.nick+'清空了画板');
+          	   Painter.Gui.clearPaint();
+             }
+             break;
+         }
      }
-
-     //only after the first request for messages do we want to show who is here
-     if (first_poll) {
-       first_poll = false;
-     }
+     
+     timeProcessArray(data.messages ,handlerMessage,function(){ 
+    	 if(userChanged)
+    		 showUsers();	
+    	 subscribse();
+     });
+   } 
+   else {
+	   subscribse();	   
    }
-
-   //make another request
-   $.ajax({ 
-	   cache: false, 
-	   type: "GET", 
-	   url: "/users/subscribse", 
-	   dataType: "json", 
-	   data: { since: CONFIG.last_message_time, id: CONFIG.id, msgid:CONFIG.msgid }, 
-	   error: function () {
-		   log("", "long poll error. trying again...", new Date(), "error");
-           //don't flood the servers on error, wait 10 seconds before retrying
-           setTimeout(longPoll, 10*1000);
-       }, 
-       success: function (json) {
-    	   transmission_errors = 0;
-    	   if(json.status==1)
-    		   longPoll(json.data);
-       }
-   });
+   
  }
- 
- //start long pull
- longPoll();
  	
     var client = new Module({
     	container:'#painter',
@@ -272,6 +287,7 @@ $(function(){
     });
     
     client.M.css({ left: paint.M[0].offsetLeft+paint.M[0].offsetWidth-client.M[0].offsetWidth -20, top:paint.M[0].offsetTop +50 });
+
  
 //if we can, notify the server that we're going away.
  $(window).unload(function () {
@@ -279,12 +295,31 @@ $(function(){
  });
  
  Painter.updateImageHandler=function(pos,options){
-	 jQuery.post("/users/sendOper", {id: CONFIG.id, pos: pos, options:options}, function (data) { }, "json");
+	 jQuery.post("/users/sendOper", {id: CONFIG.id, subtype:'mousemove' ,pos: pos, options:options}, function (data) { }, "json");
  }
  
  Painter.updateMouseMoveHandler=function(pos,options){
-	 jQuery.post("/users/sendOper", {id: CONFIG.id, pos: pos, options:options}, function (data) { }, "json");
+	 jQuery.post("/users/sendOper", {id: CONFIG.id, subtype:'mousedown' ,pos: pos, options:options}, function (data) { }, "json");
  }
-
+ 
+ var showUsers=function(callback){
+	  jQuery.get("/users/getAll", {id: CONFIG.id}, function (json) { 		  
+		  var nicks=json.data.nicks ,users=[];
+		  for(var i=0,len=nicks.length;i<len;i++){
+			  users.push(nicks[i]);		 
+		  }	
+		  if(users.length>0)
+			  client.appendInfo('当前用户：'+users.join(','));
+		  
+		  if(callback)
+			  callback();	
+	  }, "json"); 
+ }
+ 
+ //获取用户列表后开始长连接
+ showUsers(function(){
+	  longPoll();
+ });
+ 
     	
 });

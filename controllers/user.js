@@ -40,13 +40,14 @@ module.exports = {
 	var id = req.param('id'),
 		pos = req.param('pos'),
 		options=req.param('options'),
+		subtype=req.param('subtype'),
 	    session = userService.getSessionById(id);
 	if (!session) {
 	  res.sendJson(Fail_Flag, 'No such session id ');
 	  return;
 	}
 	session.poke();
-	userService.sendOper(session.nick, pos, options);
+	userService.sendOper(session.nick, pos, options ,subtype);
 	res.sendJson(Success_Flag, 'ok', { rss: mem.rss,vsize:mem.vsize,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
   },
   //subcribse for long pull
@@ -89,7 +90,8 @@ module.exports = {
 	  vsize:mem.vsize,
 	  heapTotal:mem.heapTotal,
 	  heapUsed:mem.heapUsed,
-	  starttime: starttime
+	  starttime: starttime,
+	  msgid:userService.getMsgNum()
 	});
   },
   //get all the current users

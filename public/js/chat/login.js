@@ -81,7 +81,7 @@ $(function(){
        			 nick : session.nick,
        			 id : session.id,
        			 last_message_time :1,
-       			 msgid:0
+       			 msgid:session.msgid
        		   }
        		  // starttime   = new Date(session.starttime);
        		  // rss         = session.rss;
