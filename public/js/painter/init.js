@@ -61,12 +61,12 @@ $(function(){
             <img src="images/brush.png" onclick="Painter.tool.brush.load();" style="width:40px;height:40px;"/>\
             <img src="images/eraser.png" onclick="Painter.tool.eraser.load();" style="width:40px;height:40px;"/>\
             <img src="images/picker.png" onclick="Painter.tool.picker.load();Painter.canvas.temp[0].style.cursor=\'url(images/picker.png),pointer\';" style="width:40px;height:40px;"/>\
-            <span onclick="Painter.tool.beeline.load();canvas.temp[0].style.cursor=\'crosshair\';" >直线</span>\
             <img src="images/shape_ellipses.png" onclick="Painter.tool.rotundity.load();Painter.canvas.temp[0].style.cursor=\'crosshair\';" style="width:40px;height:40px;"/>\
-            <img src="images/shape_polygon.png" onclick="Painter.tool.rectangle.load();Painter.canvas.temp[0].style.cursor=\'crosshair\';" style="width:40px;height:40px;"/></div>\
+            <img src="images/shape_polygon.png" onclick="Painter.tool.rectangle.load();Painter.canvas.temp[0].style.cursor=\'crosshair\';" style="width:40px;height:40px;"/>\
+			<img src="images/draw_line.png" onclick="Painter.tool.beeline.load();Painter.canvas.temp[0].style.cursor=\'crosshair\';" style="width:32px;height:32px;" /></div>\
             <div id="'+Config.color+'" style="margin-top:10px;margin-left:5px;width: 34px; height: 23px; border: 1px solid #fff; float: left;"></div>\
             <div onclick="Painter.clearPaint();" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">重画</div>\
-            <div onclick="location.href=Painter.canvas.main[0].toDataURL();" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">保存</div>']
+            <div onclick="window.open(Painter.canvas.main[0].toDataURL())" style="margin-left:10px;cursor:pointer;font-weight:bold;line-height:40px;font-size:20px;float:left;">保存</div>']
     });
     tools.M.css({ left: Math.max(0, paint.M[0].offsetLeft - tools.M[0].offsetWidth - 10) + "px", top: paint.M[0].offsetTop + "px" });
 
@@ -105,6 +105,7 @@ $(function(){
             ctx_palette.stroke();
 
             $c_palette.mousedown(function (e) {
+ 
                     var x = (e.layerX - 10 || e.offsetX) - 1, y = (e.layerY || e.offsetY) - 1;
                     if (x < 0) x = 0;
                     else if (x >= w) x = w - 1;
@@ -114,14 +115,17 @@ $(function(){
                     var data = ctx_palette.getImageData(x, y, 1, 1);
                     var r = data.data;
                     r[3] = r[3] / 255;
-                    var rgba = "rgba(" + (Sys.firefox ? r.toString() : r[0] + "," + r[1] + "," + r[2] + "," + r[3]) + ")";
+          
+                    var rgba = "rgba(" + r[0] + "," + r[1] + "," + r[2] + "," + r[3] + ")";
 
                     tool.fillStyle = rgba;
+                    
+                    console.log(rgba);
                     canvas.temp.ctx.fillStyle = rgba;
                     canvas.temp.ctx.strokeStyle = rgba;
                     fillBrush();
                     $("#"+Config.color).css("backgroundColor", rgba);
-                });
+             });
         }
     });
     

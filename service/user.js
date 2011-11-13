@@ -3,7 +3,7 @@ var sys = require("util"),
 	qs = require("querystring");
 
 var MESSAGE_BACKLOG = 200,
-	SESSION_TIMEOUT = 60 * 1000,
+	SESSION_TIMEOUT = 15 * 1000,
 	MESSAGE_NUM = 0,
 	HISTORY_NUM = 20;
 
@@ -94,7 +94,7 @@ setInterval(function () {
       session.destroy();
     }
   }
-}, 1000);
+}, 5000);
 
 
 module.exports = {

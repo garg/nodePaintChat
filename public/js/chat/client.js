@@ -188,7 +188,7 @@ $(function(){
          vsize = data.vsize,
          heapTotal=data.heapTotal,
          heapUsed=data.heapUsed;
-     //paint.setTitle('画板'+' '+'内存使用情况：vsize:'+vsize+' heapTotal:'+heapTotal+' heapUsed:'+heapUsed);
+     paint.setTitle('画板'+' '+' rss:'+ rss+ ' heapTotal:'+heapTotal+' heapUsed:'+heapUsed);
      log('rss:'+rss);
    }
 
@@ -288,14 +288,18 @@ $(function(){
         }
     });
     
-    client.M.css({ left: paint.M[0].offsetLeft+paint.M[0].offsetWidth-client.M[0].offsetWidth -20, top:paint.M[0].offsetTop +50 });
+    client.M.css({ left: paint.M[0].offsetLeft+paint.M[0].offsetWidth-client.M[0].offsetWidth + 310, top:paint.M[0].offsetTop});
 
  
-//if we can, notify the server that we're going away.
- $(window).unload(function () {
-   jQuery.get("/users/exit", {id: CONFIG.id}, function (data) { }, "json");
- });
+ var _exit = function(){ 
+   	jQuery.get("/users/exit", {id: CONFIG.id}, function (data) { }, "json");
+ };
  
+//if we can, notify the server that we're going away.
+window.onbeforeunload = _exit;
+
+window.onunload = _exit;
+
  Painter.updateImageHandler=function(pos,options){
 	 jQuery.post("/users/sendOper", {id: CONFIG.id, subtype:'mousemove' ,pos: pos, options:options}, function (data) { }, "json");
  }

@@ -47,6 +47,11 @@ $(function(){
             	self.login(val);
             });
             
+            $loginInputEl.keypress(function(e){
+            	if(e.keyCode==13)
+            		$loginBtn.trigger('click');
+            });
+            
             this.showError=function(msg){
             	$loginEL.find('div.error').html('<em>'+msg+'</em>').show();
             }

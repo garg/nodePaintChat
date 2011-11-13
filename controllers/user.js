@@ -19,7 +19,7 @@ module.exports = [{
 	excute : function(req, res  , next ) {
 		var id = req.param('id');
 		userService.destroy(id);
-		res.sendJson(Success_Flag, 'ok', { rss: mem.rss,vsize:mem.vsize,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
+		res.sendJson(Success_Flag, 'ok', { rss: mem.rss,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
 	}
 },{
 	url : ['/users/sendMsg'],
@@ -35,7 +35,7 @@ module.exports = [{
 		}
 		session.poke();
 		userService.sendMsg(session.nick, text);
-		res.sendJson(Success_Flag, 'ok', { rss: mem.rss,vsize:mem.vsize,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
+		res.sendJson(Success_Flag, 'ok', { rss: mem.rss,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
 	}
 },{
 	url : ['/users/sendOper'],
@@ -53,7 +53,7 @@ module.exports = [{
 		}
 		session.poke();
 		userService.sendOper(session.nick, pos, options ,subtype);
-		res.sendJson(Success_Flag, 'ok', { rss: mem.rss,vsize:mem.vsize,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
+		res.sendJson(Success_Flag, 'ok', { rss: mem.rss,heapTotal:mem.heapTotal,heapUsed:mem.heapUsed });
 	}
 },{
 	url : ['/users/subscribse'],
@@ -98,7 +98,6 @@ module.exports = [{
 	      id: session.id, 
 		  nick: session.nick, 
 		  rss: mem.rss,
-		  vsize:mem.vsize,
 		  heapTotal:mem.heapTotal,
 		  heapUsed:mem.heapUsed,
 		  starttime: starttime,
