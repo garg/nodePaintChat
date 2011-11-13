@@ -1,11 +1,10 @@
 
-module.exports = {
-  
-  
-  index: function(req, res){
-	res.render();
-  },
-  methods:{
-	index:'get'
-  }
-};
+module.exports = [{
+	url : ['/','index'],
+	view : 'index',
+	methods : ['get'],
+	excute : function(req, res  , next ) {
+		res.render();	
+	}
+}];
+

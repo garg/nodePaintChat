@@ -171,7 +171,7 @@ $(function(){
        }, 
        success: function (json) {
     	   transmission_errors = 0;
-    	   if(json.status==1)
+    	   if(json.status==1) 
     		   longPoll(json.data);
        }
 	 }); 
@@ -188,7 +188,7 @@ $(function(){
          vsize = data.vsize,
          heapTotal=data.heapTotal,
          heapUsed=data.heapUsed;
-     paint.setTitle('画板'+' '+'内存使用情况：rss('+rss+') vsize:'+vsize+' heapTotal:'+heapTotal+' heapUsed:'+heapUsed);
+     //paint.setTitle('画板'+' '+'内存使用情况：vsize:'+vsize+' heapTotal:'+heapTotal+' heapUsed:'+heapUsed);
      log('rss:'+rss);
    }
 
@@ -199,6 +199,8 @@ $(function(){
 	 var userChanged =false;
      
      var handlerMessage=function(message){
+     	 
+     	 if(!message) return;
          //track oldest message so we only request newer messages from server
          if (message.msgid > CONFIG.msgid)
            CONFIG.msgid = message.msgid;
@@ -229,7 +231,7 @@ $(function(){
          }
      }
      
-     timeProcessArray(data.messages ,handlerMessage,function(){ 
+     timeProcessArray(data.messages ,handlerMessage, function(){ 
     	 if(userChanged)
     		 showUsers();	
     	 subscribse();

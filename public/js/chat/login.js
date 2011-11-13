@@ -86,16 +86,20 @@ $(function(){
        		  // starttime   = new Date(session.starttime);
        		  // rss         = session.rss;
        		  
+       		   //bug
        		   self.M.hide();
-       		   self.appendScript("js/painter/init.js");
-       		   self.appendScript("js/chat/client.js");
+       		   self.appendScript("js/painter/init.js",function(){
+       		   	 self.appendScript("js/chat/client.js");
+       		   });   
             }
             
-            this.appendScript=function(src){
+            this.appendScript=function(src , callback){
+            	callback = callback ? callback : function(){};
 	        	var head = document.getElementsByTagName("head")[0];
 	        	var script = document.createElement("script");
 	        	script.type="text/javascript";
 	        	script.src = src;
+	        	script.onload = callback;
 	        	head.appendChild(script); 
             }                   
        

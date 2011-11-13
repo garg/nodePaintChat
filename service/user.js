@@ -1,4 +1,4 @@
-var sys = require("sys"),
+var sys = require("util"),
 	url = require("url"),
 	qs = require("querystring");
 
@@ -60,7 +60,6 @@ var channel = new function () {
 		if(msgid<MESSAGE_NUM){
 			var index=msgid>=head?msgid-head+1:0;
 			for(var i=index,len=messages.length;i<len;i++){
-				console.log(i);
 			    matching.push(messages[i]);	
 			}		
 		}
@@ -109,7 +108,6 @@ module.exports = {
     return nicks;
   },
   createSession:function(nick){
-	console.log(nick);
     if(nicks[nick]) return null;
 
     var session = { 

@@ -42,7 +42,7 @@
 				window.console.log(str);
 		},
 		timeProcessArray:function(items,process,callback){
-			var todo=items.concat();
+			var todo=items;
 			setTimeout(function(){
 				var start=+new Date();
 				do {
